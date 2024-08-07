@@ -38,9 +38,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'whitenoise.runserver_nostatic',
-    'store',
-    'chatBot'
-    
+    'store',    
 ]
 
 
