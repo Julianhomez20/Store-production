@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    Sign Up
+{% endblock %}
+
+{% block body %}
+    <div class="container-sign-up-form">
+        <div class="container-create-acccount">
+            <p>Create an Account</p>
+        </div>
+        <div class="error-sign_up">
+            {{ error }}
+        </div>
+        <form method="POST" action="{% url 'sign_up' %}?next={{ request.GET.next }}">
+            {% csrf_token %}
+            <div class="form-user-sign">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+            </div>
+            <div class="form-pwd1">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+            </div>
+            <div class="form-pwd2">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+            </div>
+            <button type="submit" class="btn-create">    
+                    <span>Create</span>
+            </div>
+        </form>
+    </div>
+    
+{% endblock %}
