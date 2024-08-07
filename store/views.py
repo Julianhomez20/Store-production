@@ -23,7 +23,6 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth.backends import ModelBackend
 
 
-COHERE_KEY = os.getenv('COHERE_KEY')
 
 
 
@@ -115,19 +114,8 @@ def home_view(request):
     
     # List comprehension to create a list with all the products and their data
     product_list = [f"{product.name}: {product.description} price: {product.price} id: {product.id}" for product in products]
-
-    # if the API key is not valid
-    if not COHERE_KEY:
-        return JsonResponse({'error': 'Cohere API key is not set'}, status=500)
     
-    # Instantiate the client with the API key loaded from dotenv
-    co = cohere.Client(COHERE_KEY)
     
-    # Initialize chat messages if not already in session
-    if 'chat_messages' not in request.session:
-        request.session['chat_messages'] = []
-
-    chat_messages = request.session['chat_messages']
 
     # Handle adding products to cart
     if request.method == 'POST' and 'add_to_cart' in request.POST:
@@ -160,38 +148,13 @@ def home_view(request):
     elif request.method == 'POST':
         user_message = request.POST.get('user_input')
         
-        # If the message exists
-        if user_message:
-            chat_messages.append({'sender': 'user', 'text': user_message})
-            try:
-                response = co.chat(
-                    model="command-r-plus",
-                    temperature=0.7,
-                    stop_sequences=["usuario:"],
-                    preamble=f"""
-                                PC Guru, eres el bot oficial para JPC, un ecommerce especializado en componentes de PC de gama media-alta. Tu misión es proporcionar recomendaciones personalizadas, responder preguntas técnicas sobre hardware y facilitar el proceso de compra. Tu objetivo es mejorar la experiencia del usuario ofreciendo conocimientos especializados y asistencia práctica en la selección de productos tecnológicos.
-                                A continuación, se proporciona una lista de productos disponibles: {', '.join(product_list)}. Cuando recomiendes un producto, siempre incluye el enlace al producto correspondiente en el formato HTML. El formato del enlace es: <a href="http://127.0.0.1:8000/product/<ID_DEL_PRODUCTO>">Product Link</a>.
-                                Recuerda siempre proporcionar enlaces precisos y asegurar que tus respuestas sean claras y útiles para el usuario.
-                                Ejemplo de respuesta correcta:
-                                - Aquí tienes un enlace a nuestra tarjeta gráfica NVIDIA GeForce RTX 4070 SUPER TRINITY 12GB BLACK EDITION: <a href="http://127.0.0.1:8000/product/254">Link</a>
-                                Usuario: {user_message}
-                                PC Guru:""",
-                    message=user_message,
-                )
-                chat_messages.append({'sender': 'bot', 'text': response.text})
-            except:
-                chat_messages.append({'sender': 'bot', 'text': 'In this moment I am not online'})
-            
-            request.session['chat_messages'] = chat_messages
-            
-            return JsonResponse({'chat_messages': chat_messages})
+
         
     return render(request, 'home.html', {
         'processors': processors,
         'cards': cards,
         'laptops': laptops,
         'keyboards': keyboards,
-        'chat_messages': chat_messages,
     })
 
 

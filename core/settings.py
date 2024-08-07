@@ -20,7 +20,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'store-deploy-deploy.up.railway.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'store-production-production.up.railway.app']
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'whitenoise.runserver_nostatic',
     'store',
+    'chatBot'
     
 ]
 
