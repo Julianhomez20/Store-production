@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
+    path('static/', include('store.urls')),
     path('', views.home_view, name='home'),
     path('components', views.components_view, name='components'),
     path('laptops', views.laptops_view, name='laptops'),
@@ -31,7 +32,4 @@ urlpatterns = [
     path('api/cart_item_count/', views.cart_item_count, name='cart_item_count'),
     path('remove_from_cart/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     
-]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

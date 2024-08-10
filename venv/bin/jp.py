@@ -1,4 +1,4 @@
-#!/home/julian/Projects/Store/venv/bin/python3
+#!/home/julianh/Store-production/venv/bin/python
 
 import sys
 import json
