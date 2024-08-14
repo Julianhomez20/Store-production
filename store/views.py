@@ -22,6 +22,14 @@ import cohere
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.backends import ModelBackend
 
+import google.generativeai as genai
+
+load_dotenv()
+
+genai.configure(api_key= 'AIzaSyBkHt8SBoeT_PQsEi5zjYrJDl0ylg1aL4U')
+
+
+
 
 
 
@@ -100,7 +108,20 @@ def home_view(request):
     2. The other part communicates with the cohere API to get responses
        for the chatbot.
     """
-
+    
+    model = genai.GenerativeModel(
+    'gemini-1.5-flash',
+    system_instruction=(
+        """
+        You are PC Guru, the virtual assistant of JPC, an e-commerce platform managed by Julian Homez, 
+        specializing in mid-to-high-end PC components. Your mission is to provide expert advice and, when requested by 
+        the user, offer information about the products available in the store, including purchase links. 
+        Here is the list of products: {', '.join(product_list)}. 
+        When providing a purchase link, use the following format: 
+        <a href="https://store-production-production.up.railway.app/product/{PRODUCT_ID}">Link</a>."
+        """
+    )
+)
     # The following querysets are the products to display on the home page
     processors = Product.objects.filter(category=1)
     cards = Product.objects.filter(category=2)
@@ -115,6 +136,10 @@ def home_view(request):
     # List comprehension to create a list with all the products and their data
     product_list = [f"{product.name}: {product.description} price: {product.price} id: {product.id}" for product in products]
     
+    if 'chat_messages' not in request.session:
+        request.session['chat_messages'] = []
+    
+    chat_messages = request.session['chat_messages']
     
 
     # Handle adding products to cart
@@ -145,8 +170,21 @@ def home_view(request):
             return JsonResponse({'success': True})
     
     # Handle chatbot messages
-    elif request.method == 'POST':
+    elif request.method == 'POST' and 'user_input' in request.POST:
         user_message = request.POST.get('user_input')
+        
+        if user_message:
+            chat_messages.append({'sender': 'user', 'text': user_message})
+            try:
+                response= model.generate_content(user_message)
+                chat_messages.append({'sender': 'bot', 'text': response.text})
+            except:
+                chat_messages.append({'sender': 'bot', 'text': 'Im not online' })
+            
+            request.session['chat_messages'] = chat_messages
+            
+            return JsonResponse({'chat_messages': chat_messages})
+    
         
 
         
@@ -155,6 +193,7 @@ def home_view(request):
         'cards': cards,
         'laptops': laptops,
         'keyboards': keyboards,
+        'chat_messages': chat_messages
     })
 
 
