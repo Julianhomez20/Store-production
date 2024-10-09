@@ -20,7 +20,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'store-production-production.up.railway.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'store-production-production-540b.up.railway.app']
 
 
 # Application definition
@@ -169,4 +169,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-CSRF_TRUSTED_ORIGINS = ['http://*','https://store-production-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['http://*','store-production-production-540b.up.railway.app']
