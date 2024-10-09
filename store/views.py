@@ -26,7 +26,7 @@ import google.generativeai as genai
 
 load_dotenv()
 
-genai.configure(api_key= 'AIzaSyBkHt8SBoeT_PQsEi5zjYrJDl0ylg1aL4U')
+genai.configure(api_key= 'AIzaSyC_R3_O_E-BT-xXlwvZM3DSpLSWGV7jho8')
 
 
 
